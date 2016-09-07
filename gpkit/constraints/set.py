@@ -60,8 +60,10 @@ class ConstraintSet(list):
             if len(variables) == 1:
                 return variables[0]
             elif variables[0].key.idx and variables[0].key.shape:
+                from ..nomials.array import NomialArray
                 # maybe it's all one vector variable!
                 vector = np.full(variables[0].key.shape, np.nan, dtype="object")
+                vector = NomialArray(vector)
                 goaldict = dict(variables[0].key.descr)
                 del goaldict["idx"]
                 for variable in variables:

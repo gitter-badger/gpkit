@@ -46,16 +46,17 @@ def feasibility_model(program, flavour="max", varname=None,
 
     if flavour == "max":
         slackvar = Variable(varname)
+        cost = slackvar
         posynomials = ([slackvar >= 1] +
                        [posy <= slackvar
                         for posy in posynomials[1:]])
-        prog = programType(slackvar, posynomials)
+        prog = programType(cost, posynomials)
 
     elif flavour == "product":
-        slackvars = VectorVariable(len(posynomials), varname)
-        cost = np.sum(slackvars)
+        slackvars = VectorVariable(len(posynomials)-1, varname)
+        cost = np.prod(slackvars)
         posynomials = (slackvars >= 1,
-                       posynomials <= slackvars)
+                       posynomials[1:] <= slackvars)
         prog = programType(cost, posynomials)
         prog.slackvars = slackvars
 

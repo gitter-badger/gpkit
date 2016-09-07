@@ -4,6 +4,7 @@ import numpy as np
 from .nomials import NomialArray
 from .small_classes import Strings, DictOfLists
 from .small_scripts import unitstr, mag
+from .varkey import VarKey
 
 
 class SolutionArray(DictOfLists):
@@ -192,6 +193,13 @@ def results_table(data, title, minval=0, printunits=True, fixedcols=True,
         notnan = ~np.isnan([v_])
         if np.any(notnan) and np.max(np.abs(np.array([v_])[notnan])) >= minval:
             b = isinstance(v, Iterable) and bool(v.shape)
+            if b and v.shape == (1,):
+                b = False
+                v = v[0]
+                descr = k.descr
+                if "shape" in descr:
+                    del descr["shape"]
+                k = VarKey(**descr)
             model = ", ".join(k.descr.get("models", ""))
             models.add(model)
             s = k.str_without("models")
